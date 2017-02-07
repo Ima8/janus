@@ -26,24 +26,24 @@ func testIsNumeric(s string) bool {
 // key - path first level
 // value - function to test if the second level is ID
 var hasIDAtSecondLevel = map[string]func(string) bool{
-	"user":              testAlwaysTrue,
-	"users":             testAlwaysTrue,
-	"allergens":         testAlwaysTrue,
-	"cuisines":          testAlwaysTrue,
-	"favorites":         testAlwaysTrue,
-	"ingredients":       testAlwaysTrue,
-	"menus":             testAlwaysTrue,
-	"ratings":           testAlwaysTrue,
-	"recipes":           testAlwaysTrue,
-	"addresses":         testAlwaysTrue,
-	"boxes":             testAlwaysTrue,
-	"coupons":           testAlwaysTrue,
-	"customers":         testAlwaysTrue,
-	"delivery__options": testAlwaysTrue,
-	"product__families": testAlwaysTrue,
-	"products":          testAlwaysTrue,
-	"recipients":        testAlwaysTrue,
-	"subscriptions":     testIsNumeric,
+	"user":             testAlwaysTrue,
+	"users":            testAlwaysTrue,
+	"allergens":        testAlwaysTrue,
+	"cuisines":         testAlwaysTrue,
+	"favorites":        testAlwaysTrue,
+	"ingredients":      testAlwaysTrue,
+	"menus":            testAlwaysTrue,
+	"ratings":          testAlwaysTrue,
+	"recipes":          testAlwaysTrue,
+	"addresses":        testAlwaysTrue,
+	"boxes":            testAlwaysTrue,
+	"coupons":          testAlwaysTrue,
+	"customers":        testAlwaysTrue,
+	"delivery_options": testAlwaysTrue,
+	"product_families": testAlwaysTrue,
+	"products":         testAlwaysTrue,
+	"recipients":       testAlwaysTrue,
+	"subscriptions":    testIsNumeric,
 }
 
 type Bucket interface {
@@ -94,7 +94,14 @@ func getMetricName(method string, url *url.URL) string {
 		}
 	}
 
-	if testFunction, ok := hasIDAtSecondLevel[metricFragments[0]]; ok {
+	firstFragment := "/"
+	for _, fragment := range strings.Split(url.Path, "/") {
+		if fragment != "" {
+			firstFragment = fragment
+			break
+		}
+	}
+	if testFunction, ok := hasIDAtSecondLevel[firstFragment]; ok {
 		if testFunction(metricFragments[1]) {
 			metricFragments[1] = pathIDPlaceholder
 		}
